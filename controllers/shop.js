@@ -21,7 +21,7 @@ exports.postCart = (req, res, next) => {
   console.log(proId);  // This should log the product ID
   // Add your logic to add the product to the cart (e.g., saving to a database)
   Product.findById(proId , (product)=>{
-
+    Cart.addProduct(proId,product.price);
   });
   res.redirect('/cart');  // Redirects to the cart page
 };  

@@ -1,43 +1,54 @@
 const fs = require('fs');
 const path = require('path');
 
-const p = path.join(
-    path.dirname(process.mainModule.filename),
+// Construct the path to 'cart.json'
+const cartFilePath = path.join(
+    path.dirname(require.main.filename),
     'data',
     'cart.json'
 );
 
-
 module.exports = class Cart {
-    constructor() {
-        this.product = [];
-        this.totalPrice = 0;
-    }
-    static addProduct(id) {
-        //fetch thr previous carrt
-        fs.readFile(p, (err, fileContent) => {
+    static addProduct(productId, productPrice) {
+        // Read the current cart from the file
+        fs.readFile(cartFilePath, (err, fileContent) => {
             let cart = { products_of_cart: [], totalPrice: 0 };
-            if (!err) {
-                cart = JSON.parse(fileContent);
-            }
-            // analyse the cart => find the existing product
-            const existingProductIndex = cart.products_of_cart.findIndex(prob => prod.id === id);
-            const existingProduct = cart.products_of_cart[existingProductIndex];
-            let updatedProduct;
 
-            // add new product/increase quantity
-            if (existingProductIndex) {
-                updatedProduct = { ...existingProductIndex };
-                updatedProduct.qty = updatedProduct.qty + 1;
-                cart.products_of_cart = [...cart.products_of_cart];
-                cart.products_of_cart[existingProductIndex] = updatedProduct;
+            if (!err) {
+                try {
+                    // Parse the file content if no error
+                    cart = JSON.parse(fileContent);
+                } catch (parseErr) {
+                    console.error('Error parsing JSON:', parseErr);
+                }
             } else {
-                updatedProduct = { id: id, qty: 1 };
-                cart.products_of_cart = [...cart.products_of_cart, updatedProduct];
+                console.error('Error reading the file:', err);
             }
-            cart.totalPrice = cart.totalPrice + +productPrice;
-            fs.writeFile(p,JSON.stringify(cart) , err=> {
-                console.log(err);
+
+            // Find the index of the existing product
+            const existingProductIndex = cart.products_of_cart.findIndex(product => product.id === productId);
+            const existingProduct = cart.products_of_cart[existingProductIndex];
+            let productUpdate;
+
+            // Update existing product quantity or add new product
+            if (existingProductIndex >= 0) {
+                productUpdate = { ...existingProduct };
+                productUpdate.qty = productUpdate.qty + 1;
+                cart.products_of_cart[existingProductIndex] = productUpdate;
+            } else {
+                productUpdate = { id: productId, qty: 1 };
+                cart.products_of_cart.push(productUpdate);
+            }
+
+            // Update the total price
+            cart.totalPrice += +productPrice;
+
+            // Write the updated cart back to the file
+        
+            fs.writeFile(cartFilePath, JSON.stringify(cart, null, 2), err => {
+                if (err) {
+                    console.error('Error writing file:', err);
+                }
             });
         });
     }
