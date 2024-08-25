@@ -4,6 +4,7 @@ exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
+    editing : false
   });
 };
 
@@ -18,9 +19,30 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 exports.getEditProduct = (req, res, next) => {
-  res.render('admin/edit-product', {
-    pageTitle: 'Add Product',
-    path: '/admin/add-product',
+
+  const edit_Mode = req.query.edit ;
+  if(!edit_Mode){
+    return res.redirect('/');
+  }
+
+  const prod_ID= req.params.productId;
+  Product.findById(prod_ID , found_Product =>{  // Product --> is a model imported in 1st line
+    if(!found_Product){
+      // properly show error not just redirect
+      // Render an error page or send an error message instead of redirecting
+      return res.status(404).render('admin/error', {
+        pageTitle: 'Product Not Found',
+        path: '/admin/error',
+        errorMessage: 'The product you are trying to edit does not exist.'
+      });
+    }
+
+    res.render('admin/edit-product', {
+      pageTitle: 'Edd Product',
+      path: '/admin/edit-product',
+      editing : edit_Mode,
+      product : found_Product 
+    });
   });
 };
 
