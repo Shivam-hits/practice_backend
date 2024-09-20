@@ -25,6 +25,7 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/');
   }
 
+// Below code for pre-population the edit page  of any product
   const prod_ID = req.params.productId;
   Product.findById(prod_ID, found_Product => {  // Product --> is a model imported in 1st line
     if (!found_Product) {
@@ -38,7 +39,7 @@ exports.getEditProduct = (req, res, next) => {
     }
 
     res.render('admin/edit-product', {
-      pageTitle: 'Edd Product',
+      pageTitle: 'Add Product',
       path: '/admin/edit-product',
       editing: edit_Mode,
       product: found_Product
@@ -46,6 +47,10 @@ exports.getEditProduct = (req, res, next) => {
   });
 };
 
+// This functions post all the edit made in existing poduct through edit button
+exports.postEditProduct=(req,res,next)=>{
+
+};
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll(products => {
@@ -56,3 +61,4 @@ exports.getProducts = (req, res, next) => {
     });
   });
 };
+
