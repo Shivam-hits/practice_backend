@@ -1,43 +1,60 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/product.css">
-    </head>
+<link rel="stylesheet" href="/css/product.css">
+</head>
 
-    <body>
-        <%- include('../includes/navigation.ejs') %>
+<body>
+    <%- include('../includes/navigation.ejs') %>
 
-            <main>
-                <% if (prods.length > 0) { %>
-                    <div class="grid">
-                        <% for (let product of prods) { %>
-                            <article class="card product-item">
-                                <header class="card__header">
-                                    <h1 class="product__title">
-                                        <%= product.title %>
-                                    </h1>
-                                </header>
-                                <div class="card__image">
-                                    <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
-                                </div>
-                                <div class="card__content">
-                                    <h2 class="product__price">$
-                                        <%= product.price %>
-                                    </h2>
-                                    <p class="product__description">
-                                        <%= product.description %>
-                                    </p>
-                                </div>
-                                <div class="card__actions">
-                                    <a href="/admin/edit-product/<%= product.id %> ? edit = true" class="btn">Edit</a>
-                                    <form action="/admin/delete-product" method="POST">
-                                        <button class="btn" type="submit">Delete</button>
-                                    </form>
+    <main>
+        <% if (prods.length> 0) { %>
+        <div class="grid">
+            <% for (let product of prods) { -%> <!--here -%  will remove all the tailling white spaces from ejs codes   -->
+            <article class="card product-item">
+                <header class="card__header">
+                    <h1 class="product__title"><%= product.title %></h1>
+                </header>
+                <div class="card__image">
+                    <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                </div>
 
-                                </div>
-                            </article>
-                            <% } %>
-                    </div>
-                    <% } else { %>
-                        <h1>No Products Found!</h1>
-                        <% } %>
-            </main>
-            <%- include('../includes/end.ejs') %>
+                <div class="card__content">
+                    <h2 class="product__price">$<%= product.price %></h2>
+                    <p class="product__description"><%= product.description %></p>
+                </div>
+
+                <div class="card__actions">
+                    <a href="/admin/edit-product/<%= product.id %>?edit=true" class="btn">Edit</a>
+                    <form action="/admin/delete-product" method="POST">
+                        <input type="hidden" name="productId" value="<%= product.id %>">
+                        <button class="btn" type="submit">Delete</button>
+                    </form>
+                </div>
+            </article>
+            <% } %>
+        </div>
+        <% } else { %>
+        <h1>No Products Found!</h1>
+        <% } %>
+    </main>
+<%- include('../includes/end.ejs') %>
+
+
+
+<!-- The hidden input field is necessary because when a form is submitted, only the data within the form is sent to the server.
+In your case, the form submission needs to include the product ID so that the server knows which product to delete.
+Without this hidden input, the server wouldn't have a way to identify the specific product being deleted.
+
+Here's a more detailed explanation:
+
+1) Form Data Submission: When you submit a form, the browser sends the data from the form fields to the server. 
+In the delete form, you want to send the product ID to tell the server which product to delete.
+
+2) Identifying the Product: The hidden input field <input type="hidden" name="productId" value="<%//= product.id %>">  <% //single line comment   %>     <% /* This is a  multi-line comment */ %>
+      
+ensures that the product ID is included in the form submission. This way, the server can receive the product ID and 
+use it to identify and delete the correct product.
+
+3)Server-side Processing: On the server side, you will handle the form submission, retrieve the product ID from the form data,
+and perform the deletion operation based on that ID.
+
+Without the hidden input field, the form submission would not include the product ID, and the server wouldn't know which product to delete. -->
