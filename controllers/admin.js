@@ -49,7 +49,20 @@ exports.getEditProduct = (req, res, next) => {
 
 // This functions post all the edit made in existing poduct through edit button
 exports.postEditProduct=(req,res,next)=>{
-
+  const product_id = req.body.productId;
+  const updated_title = req.body.title;
+  const updated_price = req.body.price;
+  const updated_imageURL = req.body.imageUrl;
+  const updated_description = req.body.description;
+  // All the above paramaters (Description ,productId,title etc..) in "req.body.  " 
+  //  should match the "name" paranater of input tag of html
+  const updated_product = new Product(
+    product_id,
+    updated_title,
+    updated_price,
+    updated_imageURL,
+    updated_description
+  ); //instance of product
 };
 
 exports.getProducts = (req, res, next) => {
@@ -61,4 +74,3 @@ exports.getProducts = (req, res, next) => {
     });
   });
 };
-
