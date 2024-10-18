@@ -3,15 +3,14 @@
 
     <body>
         <%- include('../includes/navigation.ejs') %>
-        <main>
+        <main class="centered">
+            <h1><%= product.title %></h1>
+            <hr>
             <div>
-                <img src="<%= pro.imageURL %>" alt="<%= pro.title  %>" srcset="">
+                <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
             </div>
-            <h2><%= pro.price%></h2>
-            <p><%= pro.description %></p>
-            <form action="/cart" method="post">
-                <button class="btn" type="submit">Add to cart</button>
-                <input type="hidden" name="productId" value="<%= pro.id %>">
-            </form>
+            <h2><%= product.price %></h2>
+            <p><%= product.description %></p>
+            <%- include('../includes/add-to-cart.ejs') %>
         </main>
         <%- include('../includes/end.ejs') %>
